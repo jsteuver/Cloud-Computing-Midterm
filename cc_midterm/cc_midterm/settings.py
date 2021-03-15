@@ -76,8 +76,15 @@ WSGI_APPLICATION = 'cc_midterm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'kroger',
+        'HOST': os.getenv('CCMIDTERM_SQL_HOST'),
+        'USER': os.getenv('CCMIDTERM_SQL_USER'),
+        'PASSWORD': os.getenv('CCMIDTERM_SQL_PASS'),
+
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+        }
     }
 }
 
