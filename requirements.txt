@@ -1,0 +1,4 @@
+# pip-require file for keeping centralized requirements
+Django==3.0.10
+pyodbc>=4.0
+django-mssql-backend==2.8.1
