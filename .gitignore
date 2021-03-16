@@ -1,2 +1,5 @@
 # Locally imported server environment variables
 env
+
+# Ignore temporary pycache files in any directory
+*__pycache__*
