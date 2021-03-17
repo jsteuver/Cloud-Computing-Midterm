@@ -16,6 +16,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Path to this directory
+SETTINGS_PATH = os.path.normpath(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cc_midterm',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +69,10 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+TEMPLATE_DIRS = [
+    os.path.join(SETTINGS_PATH, 'templates')
 ]
 
 WSGI_APPLICATION = 'cc_midterm.wsgi.application'
