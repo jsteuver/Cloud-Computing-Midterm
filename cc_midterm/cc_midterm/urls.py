@@ -21,9 +21,11 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('pie-chart/', views.pie_chart, name='pie-chart'),
     path('admin/', admin.site.urls),
     path('login/', LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(template_name='logout.html'), name='logout'),
-    path('signup/', views.signup, name='signup')
+    path('signup/', views.signup, name='signup'),
+    # Temp for testing
+    path('pie-chart/', views.pie_chart, name='pie-chart'),
+    path('line-chart-labeled/', views.line_chart_labeled, name='line-chart-labeled'),
 ]
