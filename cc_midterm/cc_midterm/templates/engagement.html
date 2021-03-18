@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% include "line_chart_labeled.html" with title=title labels=labels data=data backgroundColor=backgroundColor borderColor=borderColor xLabel=xLabel yLabel=yLabel %}
+{% endblock %}

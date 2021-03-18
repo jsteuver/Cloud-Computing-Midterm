@@ -2,7 +2,9 @@ from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render, redirect
 
+from .models import Households, Products, Transactions
 from .forms import UserForm
+from .data import get_monthly_transaction_amt
 
 # Central UI colors
 # Obtained from pastel colors (top row) of:
@@ -11,6 +13,46 @@ FLAT_UI_COLORS = [
     '#f3a683', '#f7d794', '#778beb', '#e77f67', '#cf6a87',
     '#786fa6', '#f8a5c2', '#63cdda', '#ea8685', '#596275'
 ]
+
+# Get any data right at the start
+# Makes server start a slower, but user can view pages much more quickly
+MONTHLY_TRANSACTION_AMT = get_monthly_transaction_amt()
+
+def home(request):
+    text = "Welcome! Please log in to continue."
+    if request.user.pk:
+        text = "Welcome, " + request.user.username + "."
+
+    return render(request, 'index.html', { 'text': text })
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+
+    else:
+        form = UserForm()
+
+    return render(request, 'signup.html', { 'form': form })
+
+def engagement(request):
+    data = MONTHLY_TRANSACTION_AMT['data']
+    labels = MONTHLY_TRANSACTION_AMT['labels']
+
+    return render(request, 'engagement.html', {
+        'title': 'Purchases',
+        'labels': labels,
+        'data': data,
+        'backgroundColor': FLAT_UI_COLORS[8],
+        'borderColor': FLAT_UI_COLORS[9],
+        'xLabel': 'Date',
+        'yLabel': 'Purchase Total ($)',
+    })
+
+
+# === TEMP ===
 
 # Temporary test data
 test_data = [
@@ -70,25 +112,6 @@ test_data = [
         'country_id': 13,
         'population': 25000000,
     }]
-
-def home(request):
-    text = "Welcome! Please log in to continue."
-    if request.user.pk:
-        text = "Welcome, " + request.user.username + "."
-
-    return render(request, 'index.html', { 'text': text })
-
-def signup(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-
-    else:
-        form = UserForm()
-
-    return render(request, 'signup.html', { 'form': form })
 
 def pie_chart(request):
     global test_data
