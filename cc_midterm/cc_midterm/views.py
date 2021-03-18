@@ -1,10 +1,27 @@
 from django.http import HttpResponse
 from django.template import loader
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+from .forms import UserForm
 
 def home(request):
-    template = loader.get_template('index.html')
-    return HttpResponse(template.render(None, request))
+    text = "Welcome! Please log in to continue."
+    if request.user.pk:
+        text = "Welcome, " + request.user.username + "."
+
+    return render(request, 'index.html', { 'text': text })
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+
+    else:
+        form = UserForm()
+
+    return render(request, 'signup.html', { 'form': form })
 
 def pie_chart(request):
     test_data = [
