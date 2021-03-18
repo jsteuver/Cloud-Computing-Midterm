@@ -26,6 +26,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('signup/', views.signup, name='signup'),
     path('engagement/', views.engagement, name='engagement'),
+    path('data-table/', views.data_table, name='data-table'),
     # Temp for testing
     path('pie-chart/', views.pie_chart, name='pie-chart'),
     path('line-chart-labeled/', views.line_chart_labeled, name='line-chart-labeled'),
