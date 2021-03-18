@@ -1,0 +1,65 @@
+{% comment %}
+
+Basic line chart that uses labels along the bottom for time-based items
+
+Example usage:
+  render(request, 'line_chart_labeled.html', {
+      'title': 'City Population 2020',
+
+      'xLabel': 'Month',
+      'labels': ['April', 'May', 'June'],
+
+      'yLabel': 'Population',
+      'data': [100, 200, 300000],
+
+      'backgroundColor': '#404040',
+      'borderColor': '#606060',
+  })
+
+{% endcomment %}
+
+{% block content %}
+  <div id="container" style="width: 60%;">
+    <canvas id="line-chart-labeled"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script>
+    var config = {
+      type: 'line',
+      data: {
+        datasets: [{
+          data: {{ data|safe }},
+          backgroundColor: '{{ backgroundColor|safe }}',
+          borderColor: '{{ borderColor|safe }}',
+          label: '{{ title|safe }}',
+        }],
+        labels: {{ labels|safe }}
+      },
+      options: {
+        responsive: true,
+        scales: {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: '{{ xLabel|safe }}',
+            },
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: '{{ yLabel|safe }}',
+            },
+          }],
+        },
+      }
+    };
+
+    window.onload = function() {
+      var ctx = document.getElementById('line-chart-labeled').getContext('2d');
+      window.myLine = new Chart(ctx, config);
+    };
+
+  </script>
+
+{% endblock %}

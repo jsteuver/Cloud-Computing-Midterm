@@ -1,3 +1,18 @@
+{% comment %}
+
+Basic pie chart
+Will repeat given background colors as necessary to fit data
+
+Example usage:
+  return render(request, 'pie_chart.html', {
+      'title': 'Population',
+      'labels': ['Shanghai', 'Cincinnati', 'Guam'],
+      'data': [300, 3000, 20],
+      'backgroundColors': ['#606060', '#202020'],
+  })
+
+{% endcomment %}
+
 {% block content %}
   <div id="container" style="width: 100%;">
     <canvas id="pie-chart"></canvas>
