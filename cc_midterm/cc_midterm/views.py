@@ -46,6 +46,36 @@ def pie_chart(request):
             'country_id': 21,
             'population': 25514000,
         }, {
+            'id': 4,
+            'name': 'Seoul',
+            'country_id': 21,
+            'population': 25514000,
+        }, {
+            'id': 4,
+            'name': 'Seoul',
+            'country_id': 21,
+            'population': 25514000,
+        }, {
+            'id': 4,
+            'name': 'Seoul',
+            'country_id': 21,
+            'population': 25514000,
+        }, {
+            'id': 4,
+            'name': 'Seoul',
+            'country_id': 21,
+            'population': 25514000,
+        }, {
+            'id': 4,
+            'name': 'Seoul',
+            'country_id': 21,
+            'population': 25514000,
+        }, {
+            'id': 4,
+            'name': 'Seoul',
+            'country_id': 21,
+            'population': 25514000,
+        }, {
             'id': 5,
             'name': 'Guangzhou',
             'country_id': 13,
@@ -56,6 +86,7 @@ def pie_chart(request):
     data = [x['population'] for x in test_data]
 
     return render(request, 'pie_chart.html', {
+        'title': 'Population (test)',
         'labels': labels,
         'data': data,
     })

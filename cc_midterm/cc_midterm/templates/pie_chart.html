@@ -12,9 +12,8 @@
         datasets: [{
           data: {{ data|safe }},
           backgroundColor: [
-            '#696969', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'
           ],
-          label: 'Population'
+          label: '{{ title|safe }}',
         }],
         labels: {{ labels|safe }}
       },
@@ -26,6 +25,38 @@
     window.onload = function() {
       var ctx = document.getElementById('pie-chart').getContext('2d');
       window.myPie = new Chart(ctx, config);
+
+      // Colors to use, retrieved from the pastel (top row) of:
+      // https://flatuicolors.com/palette/ru
+      const flatUiColors = [
+        '#f3a683', '#f7d794', '#778beb', '#e77f67', '#cf6a87',
+        '#786fa6', '#f8a5c2', '#63cdda', '#ea8685', '#596275'
+      ]
+
+      // Generate enough background colors for the given data
+      const dataset = myPie.data.datasets[0]
+      const dataCount = dataset.data.length
+      const backgroundCount = flatUiColors.length
+
+      const backgroundRepeats = Math.ceil(dataCount / flatUiColors.length)
+      const extraItems = dataCount % backgroundRepeats
+      const lastSliceIndex = backgroundRepeats * backgroundCount - (backgroundCount - extraItems)
+
+      const backgroundColors = [...Array(backgroundRepeats)]
+        // Copy over the colors
+        .map((x) => flatUiColors)
+        .flat()
+        // Remove any extra colors
+        .slice(0, lastSliceIndex)
+
+      // Disable the case where first & last areas could be the same color
+      if (extraItems === 1) {
+        backgroundColors[backgroundColors.length - 1] = flatUiColors[2]
+      }
+
+      // Update graph and reload
+      dataset.backgroundColor = backgroundColors
+      myPie.update()
     };
 
   </script>
