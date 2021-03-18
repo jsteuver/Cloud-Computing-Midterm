@@ -4,6 +4,13 @@ from django.shortcuts import render, redirect
 
 from .forms import UserForm
 
+# Central UI colors
+# Obtained from pastel colors (top row) of:
+# https://flatuicolors.com/palette/ru
+FLAT_UI_COLORS = [
+    '#f3a683', '#f7d794', '#778beb', '#e77f67', '#cf6a87',
+    '#786fa6', '#f8a5c2', '#63cdda', '#ea8685', '#596275'
+]
 def home(request):
     text = "Welcome! Please log in to continue."
     if request.user.pk:
@@ -89,4 +96,5 @@ def pie_chart(request):
         'title': 'Population (test)',
         'labels': labels,
         'data': data,
+        'backgroundColors': FLAT_UI_COLORS,
     })

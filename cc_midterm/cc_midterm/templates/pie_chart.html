@@ -11,8 +11,7 @@
       data: {
         datasets: [{
           data: {{ data|safe }},
-          backgroundColor: [
-          ],
+          backgroundColor: [],
           label: '{{ title|safe }}',
         }],
         labels: {{ labels|safe }}
@@ -26,36 +25,31 @@
       var ctx = document.getElementById('pie-chart').getContext('2d');
       window.myPie = new Chart(ctx, config);
 
-      // Colors to use, retrieved from the pastel (top row) of:
-      // https://flatuicolors.com/palette/ru
-      const flatUiColors = [
-        '#f3a683', '#f7d794', '#778beb', '#e77f67', '#cf6a87',
-        '#786fa6', '#f8a5c2', '#63cdda', '#ea8685', '#596275'
-      ]
+      const backgroundColors = {{ backgroundColors|safe }}
 
       // Generate enough background colors for the given data
       const dataset = myPie.data.datasets[0]
       const dataCount = dataset.data.length
-      const backgroundCount = flatUiColors.length
+      const backgroundCount = backgroundColors.length
 
-      const backgroundRepeats = Math.ceil(dataCount / flatUiColors.length)
+      const backgroundRepeats = Math.ceil(dataCount / backgroundColors.length)
       const extraItems = dataCount % backgroundRepeats
       const lastSliceIndex = backgroundRepeats * backgroundCount - (backgroundCount - extraItems)
 
-      const backgroundColors = [...Array(backgroundRepeats)]
+      const backgroundsRepeated = [...Array(backgroundRepeats)]
         // Copy over the colors
-        .map((x) => flatUiColors)
+        .map((x) => backgroundColors)
         .flat()
         // Remove any extra colors
         .slice(0, lastSliceIndex)
 
       // Disable the case where first & last areas could be the same color
       if (extraItems === 1) {
-        backgroundColors[backgroundColors.length - 1] = flatUiColors[2]
+        backgroundsRepeated[backgroundsRepeated.length - 1] = backgroundColors[2]
       }
 
       // Update graph and reload
-      dataset.backgroundColor = backgroundColors
+      dataset.backgroundColor = backgroundsRepeated
       myPie.update()
     };
 
