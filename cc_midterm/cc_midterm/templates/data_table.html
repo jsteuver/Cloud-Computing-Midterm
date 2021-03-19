@@ -2,7 +2,14 @@
 {% load render_table from django_tables2 %}
 
 {% block content %}
-<body>
+    <form action="/data-table/" method="GET">
+        <label for="hshd">Hshd num:</label>
+        <select name="hshd" id="hshd">
+            {% for hshd in hshds %}
+                <option value="{{ hshd.pk }}" {% if hshd.pk == selection %}selected{% endif %}>{{ hshd.pk }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
     {% render_table table %}
-</body>
 {% endblock %}

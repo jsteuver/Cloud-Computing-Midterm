@@ -136,9 +136,17 @@ def signup(request):
     return render(request, 'signup.html', { 'form': form })
 
 def data_table(request):
-    table = DataTable(Transactions.objects.all())
+    selection = int(request.GET.get('hshd') or 10)
+    
+    table = DataTable(Transactions.objects.filter(hshd_num=selection))
+    hshds = Households.objects.all().order_by('pk')
     RequestConfig(request).configure(table)
-    return render(request, 'data_table.html', { 'table': table })
+
+    return render(request, 'data_table.html', { 
+        'selection': selection,
+        'hshds': hshds,
+        'table': table 
+    })
 
 def pie_chart(request):
     global test_data
