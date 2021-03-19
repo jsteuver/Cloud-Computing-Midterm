@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django_tables2 import RequestConfig
 
 from .models import Households, Products, Transactions
-from .forms import UserForm
+from .forms import *
 from .data import *
 from .models import *
 from .tables import *
@@ -88,6 +88,16 @@ def engagement_over_time(request):
         'all_data_props': all_data_props,
         'per_house_props': per_house_props,
     })
+    
+def upload(request):
+    if request.method == 'POST':
+        form = UploadForm(request.POST, request.FILES)
+        return HttpResponse()
+    
+    else:
+        form = UploadForm()
+    
+    return render(request, 'upload.html', { 'form': form })
 
 def engagement_per_factor(request):
     # Get general data
