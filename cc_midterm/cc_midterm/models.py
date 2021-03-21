@@ -29,7 +29,7 @@ class Products(models.Model):
 
 class Transactions(models.Model):
     basket_num = models.CharField(db_column='BASKET_NUM', max_length=250, primary_key=True)  # Field name made lowercase.
-    hshd_num = models.SmallIntegerField(Households, on_delete=models.CASCADE, db_column='HSHD_NUM', blank=True, null=True)  # Field name made lowercase.
+    hshd_num = models.ForeignKey(Households, on_delete=models.CASCADE, db_column='HSHD_NUM', blank=True, null=True)  # Field name made lowercase.
     purchase = models.DateField(db_column='PURCHASE', blank=True, null=True)  # Field name made lowercase.
     product_num = models.ForeignKey(Products, on_delete=models.CASCADE, db_column='PRODUCT_NUM', blank=True, null=True)  # Field name made lowercase.
     spend = models.DecimalField(db_column='SPEND', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
