@@ -138,7 +138,7 @@ def signup(request):
 def data_table(request):
     selection = int(request.GET.get('hshd') or 10)
     
-    table = DataTable(Transactions.objects.filter(hshd_num=selection), template_name="django_tables2/semantic.html")
+    table = DataTable(Transactions.objects.filter(hshd_num=selection))
     hshds = Households.objects.all().order_by('pk')
     RequestConfig(request).configure(table)
 

@@ -1,6 +1,8 @@
-<!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'materialize.css' %}">
+
 <html>
-    <nav class="menu">
+    <nav class="menu" style="padding: 0px 12px">
         <span><a href="/">Home</a></span>
         &nbsp
         <span><a href="/signup">Sign Up</a></span>
@@ -9,12 +11,15 @@
         &nbsp
         <span><a href="/logout">Logout</a></span>
         &nbsp
-        <span style="border-left:1px solid #000;height:500px"></span>
+        <span style="border-left:1px solid #FFF;height:100%; margin: 6px"></span>
         &nbsp
         <span><a href="/engagement">User Engagement</a></span>
         &nbsp
         <span><a href="/data-table">View Data</a></span>
-        <hr/>
     </nav>
-    <body>{% block content %}{% endblock content %}</body>
+    <body>
+        <div style="padding: 24px">
+        {% block content %}{% endblock content %}
+        </div>
+    </body>
 </html>
