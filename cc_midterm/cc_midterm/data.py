@@ -3,30 +3,25 @@
 # All remaining configuration should be handled within views
 
 import calendar
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
 
-def get_monthly_transaction_amt(transactions):
-    # Accumulate monthly data
-    month_dict = {}
-    for transaction in transactions:
-        month = transaction.purchase.month
-        month_name = calendar.month_name[month]
-        year = transaction.purchase.year
+from .models import Households, Products, Transactions
 
-        if year not in month_dict: month_dict[year] = {}
-        if month not in month_dict[year]: month_dict[year][month] = 0
-        month_dict[year][month] += transaction.spend
+def get_monthly_transaction_amt(transactions=None):
+    if transactions is None: transactions = Transactions.objects.all()
 
-    # Parse monthly data into array of data points and their labels
-    data = []
-    labels = []
-    for year in sorted(month_dict.keys()):
-        year_data = month_dict[year]
-        for month in sorted(year_data.keys()):
-            label_string = calendar.month_name[month] + ' ' + str(year)
-            purchase_amt = int(year_data[month])
+    grouped = Transactions.objects \
+                          .annotate(month=TruncMonth('purchase')) \
+                          .values('month') \
+                          .annotate(total=Sum('spend')) \
+                          .order_by('month')
 
-            labels.append(label_string)
-            data.append(purchase_amt)
+    raw_data = grouped.values_list('total', flat=True)
+    raw_dates = grouped.values_list('month', flat=True)
+
+    data = [float(x) for x in raw_data]
+    labels = ['%s %d' % (calendar.month_name[d.month], d.year) for d in raw_dates]
 
     return {
         'data': data,
