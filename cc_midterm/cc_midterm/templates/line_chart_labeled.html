@@ -3,7 +3,7 @@
 Basic line chart that uses labels along the bottom for time-based items
 
 Example usage:
-  render(request, 'line_chart_labeled.html', {
+  render(request, 'line_chart_labeled.html', {'props': {
       'title': 'City Population 2020',
 
       'xLabel': 'Month',
@@ -21,7 +21,8 @@ Example usage:
               label: 'Illinois',
               borderColor: '#404040',
           }
-  })
+      ],
+  }})
 
 {% endcomment %}
 
@@ -32,11 +33,12 @@ Example usage:
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
   <script>
+   var props = {{ props|safe }}
    var config = {
       type: 'line',
       data: {
-        datasets: {{ datasets|safe }},
-        labels: {{ labels|safe }},
+        datasets: props.datasets || [],
+        labels: props.labels || [],
       },
       options: {
         responsive: true,
@@ -44,13 +46,13 @@ Example usage:
           xAxes: [{
             scaleLabel: {
               display: true,
-              labelString: '{{ xLabel|safe }}',
+              labelString: props.xLabel || '',
             },
           }],
           yAxes: [{
             scaleLabel: {
               display: true,
-              labelString: '{{ yLabel|safe }}',
+              labelString: props.yLabel || '',
             },
           }],
         },

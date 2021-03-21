@@ -25,7 +25,7 @@
 <h4>Total Monthly Expense By House</h2>
 
 <div style="max-width: 80%">
-    {% include "line_chart_labeled.html" with title=title labels=labels data=data backgroundColor=backgroundColor borderColor=borderColor xLabel=xLabel yLabel=yLabel %}
+    {% include "line_chart_labeled.html" with props=per_house_props %}
 </div>
 
 <div style="max-width: 800px">

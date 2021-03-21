@@ -48,7 +48,7 @@ def signup(request):
 def engagement(request):
     labels = MONTHLY_TRANSACTION_AMT['labels']
 
-    hshd_vals = MONTHLY_TRANSACTION_BY_HSHD.keys()
+    hshd_vals = list(MONTHLY_TRANSACTION_BY_HSHD.keys())
     values = MONTHLY_TRANSACTION_BY_HSHD.values()
 
     data_lists = [o['data'] for o in values]
@@ -58,15 +58,16 @@ def engagement(request):
         for i, (h, l) in enumerate(zip(hshd_vals, data_lists))
     ]
 
-    return render(request, 'engagement.html', {
+    per_house_props = {
         'title': 'Purchases',
         'xLabel': 'Date',
         'yLabel': 'Purchase Total ($)',
         'labels': labels,
         'datasets': datasets,
         'hshd_vals': hshd_vals,
-    })
+    }
 
+    return render(request, 'engagement.html', {'per_house_props': per_house_props})
 
 # === TEMP ===
 
