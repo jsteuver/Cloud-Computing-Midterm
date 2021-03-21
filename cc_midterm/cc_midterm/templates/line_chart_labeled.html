@@ -7,34 +7,36 @@ Example usage:
       'title': 'City Population 2020',
 
       'xLabel': 'Month',
+      'yLabel': 'Population',
+
       'labels': ['April', 'May', 'June'],
 
-      'yLabel': 'Population',
-      'data': [100, 200, 300000],
-
-      'backgroundColor': '#404040',
-      'borderColor': '#606060',
+      'datasets': [
+          {
+              data: [100, 200, 30000],
+              label: 'Kentucky',
+              borderColor: '#606060',
+          }, {
+              data: [500, 720, 0],
+              label: 'Illinois',
+              borderColor: '#404040',
+          }
   })
 
 {% endcomment %}
 
 {% block content %}
-  <div id="container" style="width: 60%;">
+  <div id="container">
     <canvas id="line-chart-labeled"></canvas>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
   <script>
-    var config = {
+   var config = {
       type: 'line',
       data: {
-        datasets: [{
-          data: {{ data|safe }},
-          backgroundColor: '{{ backgroundColor|safe }}',
-          borderColor: '{{ borderColor|safe }}',
-          label: '{{ title|safe }}',
-        }],
-        labels: {{ labels|safe }}
+        datasets: {{ datasets|safe }},
+        labels: {{ labels|safe }},
       },
       options: {
         responsive: true,

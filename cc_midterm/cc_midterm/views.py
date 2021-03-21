@@ -5,7 +5,7 @@ from django_tables2 import RequestConfig
 
 from .models import Households, Products, Transactions
 from .forms import UserForm
-from .data import get_monthly_transaction_amt
+from .data import get_monthly_transaction_amt, get_monthly_transaction_amt_by_hshd
 from .models import *
 from .tables import *
 
@@ -17,12 +17,14 @@ FLAT_UI_COLORS = [
     '#786fa6', '#f8a5c2', '#63cdda', '#ea8685', '#596275'
 ]
 
+# HSHD values to use for analysis
+HSHD_VALS = [10, 99, 117, 136, 308]
+
 # Get any data right at the start
 # Makes server start a slower, but user can view pages much more quickly
-ALL_TRANSACTIONS = Transactions.objects.all()
-
 print('Retrieving transaction data (this may take a while)...')
-MONTHLY_TRANSACTION_AMT = get_monthly_transaction_amt(ALL_TRANSACTIONS)
+MONTHLY_TRANSACTION_AMT = get_monthly_transaction_amt()
+MONTHLY_TRANSACTION_BY_HSHD = get_monthly_transaction_amt_by_hshd(HSHD_VALS)
 
 def home(request):
     text = "Welcome! Please log in to continue."
@@ -44,17 +46,25 @@ def signup(request):
     return render(request, 'signup.html', { 'form': form })
 
 def engagement(request):
-    data = MONTHLY_TRANSACTION_AMT['data']
     labels = MONTHLY_TRANSACTION_AMT['labels']
+
+    hshd_vals = MONTHLY_TRANSACTION_BY_HSHD.keys()
+    values = MONTHLY_TRANSACTION_BY_HSHD.values()
+
+    data_lists = [o['data'] for o in values]
+
+    datasets = [
+        {'label': 'HSHD %d' % h, 'data': l, 'borderColor': FLAT_UI_COLORS[i]} \
+        for i, (h, l) in enumerate(zip(hshd_vals, data_lists))
+    ]
 
     return render(request, 'engagement.html', {
         'title': 'Purchases',
-        'labels': labels,
-        'data': data,
-        'backgroundColor': FLAT_UI_COLORS[8],
-        'borderColor': FLAT_UI_COLORS[9],
         'xLabel': 'Date',
         'yLabel': 'Purchase Total ($)',
+        'labels': labels,
+        'datasets': datasets,
+        'hshd_vals': hshd_vals,
     })
 
 
@@ -142,12 +152,12 @@ def data_table(request):
     selection = int(request.GET.get('hshd') or 10)
     
     table = DataTable(Transactions.objects.filter(hshd_num=selection))
-    hshds = Households.objects.all().order_by('pk')
+    hshd_vals = Households.objects.all().order_by('pk')
     RequestConfig(request).configure(table)
 
     return render(request, 'data_table.html', { 
         'selection': selection,
-        'hshds': hshds,
+        'hshd_vals': hshd_vals,
         'table': table 
     })
 

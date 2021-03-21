@@ -11,7 +11,7 @@ from .models import Households, Products, Transactions
 def get_monthly_transaction_amt(transactions=None):
     if transactions is None: transactions = Transactions.objects.all()
 
-    grouped = Transactions.objects \
+    grouped = transactions \
                           .annotate(month=TruncMonth('purchase')) \
                           .values('month') \
                           .annotate(total=Sum('spend')) \
@@ -27,3 +27,14 @@ def get_monthly_transaction_amt(transactions=None):
         'data': data,
         'labels': labels,
     }
+
+def get_monthly_transaction_amt_by_hshd(hshd_vals, transactions=None):
+    if transactions is None: transactions = Transactions.objects.all()
+
+    ret_dict = {}
+    for hshd in hshd_vals:
+        print('Retrieving transactions for HSHD:', hshd)
+        this_hshd_transactions = transactions.filter(hshd_num=hshd)
+        ret_dict[hshd] = get_monthly_transaction_amt(this_hshd_transactions)
+
+    return ret_dict
