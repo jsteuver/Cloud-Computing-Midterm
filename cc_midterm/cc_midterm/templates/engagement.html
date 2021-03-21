@@ -2,9 +2,63 @@
 
 {% block content %}
 
-<h2>Total Monthly Expense By House</h2>
+<h2>Customer Engagement</h2>
+
+<div style="max-width: 800px">
+    <p>
+        In this section of the webpage, we will try to analyze the data and address
+        the question:
+
+        <blockquote>How does customer engagement change over time?</blockquote>
+
+        For ease of analysis, as well as for statistical best practice, this was
+        done by taking a <b>sample</b> of households. The chosen households are
+        mostly random, but were slightly curated to ensure variance in background
+        and abundance in purchasing activity.
+    </p>
+    <p>
+        The resulting chosen households can be tagged by their HSHD (ID) values:
+        <b>{{ hshd_vals|join:", " }}</b>.
+    </p>
+</div>
+
+<h4>Total Monthly Expense By House</h2>
 
 <div style="max-width: 80%">
     {% include "line_chart_labeled.html" with title=title labels=labels data=data backgroundColor=backgroundColor borderColor=borderColor xLabel=xLabel yLabel=yLabel %}
 </div>
+
+<div style="max-width: 800px">
+
+    <p>
+        Here, we can see the total monthly transaction data for each household.
+    </p>
+
+    <p>
+
+        Seeing this data, it's clear theres a wide variety of things happening
+        in each household. First, we can gather that <b>sales are not severely
+        decreasing over time</b>, as it appears that there is always some sort
+        of activity happening regardless of the time of year. However, we also
+        see that <b>purchase activity gets more less abundant and more
+        consistent following January 2021</b>. This is clearly a result of the
+        ongoing pandemic, perhaps implying that it has forced households into
+        more normalized schedules as things like travel calm down, as well as
+        spend less as the US economy begins to decline.
+
+    </p>
+
+    <p>
+
+        However, to further address the question at hand, we need to go into
+        more detail. We can do this by looking at the <b>categories purchased by
+        these households</b>...
+
+    </p>
+</div>
+
+<div style="max-width: 80%">
+    <em>(Another line chart here...)</em>
+</div>
+
 {% endblock %}
