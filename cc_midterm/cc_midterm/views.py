@@ -19,7 +19,10 @@ FLAT_UI_COLORS = [
 
 # Get any data right at the start
 # Makes server start a slower, but user can view pages much more quickly
-MONTHLY_TRANSACTION_AMT = get_monthly_transaction_amt()
+ALL_TRANSACTIONS = Transactions.objects.all()
+
+print('Retrieving transaction data (this may take a while)...')
+MONTHLY_TRANSACTION_AMT = get_monthly_transaction_amt(ALL_TRANSACTIONS)
 
 def home(request):
     text = "Welcome! Please log in to continue."
