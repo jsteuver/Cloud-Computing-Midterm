@@ -1,10 +1,13 @@
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render, redirect
+from django_tables2 import RequestConfig
 
 from .models import Households, Products, Transactions
 from .forms import UserForm
 from .data import get_monthly_transaction_amt
+from .models import *
+from .tables import *
 
 # Central UI colors
 # Obtained from pastel colors (top row) of:
@@ -112,6 +115,38 @@ test_data = [
         'country_id': 13,
         'population': 25000000,
     }]
+
+def home(request):
+    text = "Welcome! Please log in to continue."
+    if request.user.pk:
+        text = "Welcome, " + request.user.username + "."
+
+    return render(request, 'index.html', { 'text': text })
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+
+    else:
+        form = UserForm()
+
+    return render(request, 'signup.html', { 'form': form })
+
+def data_table(request):
+    selection = int(request.GET.get('hshd') or 10)
+    
+    table = DataTable(Transactions.objects.filter(hshd_num=selection), template_name="django_tables2/semantic.html")
+    hshds = Households.objects.all().order_by('pk')
+    RequestConfig(request).configure(table)
+
+    return render(request, 'data_table.html', { 
+        'selection': selection,
+        'hshds': hshds,
+        'table': table 
+    })
 
 def pie_chart(request):
     global test_data
