@@ -46,28 +46,45 @@ def signup(request):
     return render(request, 'signup.html', { 'form': form })
 
 def engagement(request):
+    # Process total data
     labels = MONTHLY_TRANSACTION_AMT['labels']
+    all_data = MONTHLY_TRANSACTION_AMT['data']
 
-    hshd_vals = list(MONTHLY_TRANSACTION_BY_HSHD.keys())
-    values = MONTHLY_TRANSACTION_BY_HSHD.values()
-
-    data_lists = [o['data'] for o in values]
-
-    datasets = [
-        {'label': 'HSHD %d' % h, 'data': l, 'borderColor': FLAT_UI_COLORS[i]} \
-        for i, (h, l) in enumerate(zip(hshd_vals, data_lists))
-    ]
-
-    per_house_props = {
-        'title': 'Purchases',
+    all_data_props = {
+        'id': 'all-data',
+        'title': 'Cumulative Purchases',
         'xLabel': 'Date',
         'yLabel': 'Purchase Total ($)',
         'labels': labels,
-        'datasets': datasets,
-        'hshd_vals': hshd_vals,
+        'datasets': [{'label': 'All Data', 'data': all_data, 'borderColor': FLAT_UI_COLORS[0]}],
     }
 
-    return render(request, 'engagement.html', {'per_house_props': per_house_props})
+    # Process per-household data
+    hshd_vals = list(MONTHLY_TRANSACTION_BY_HSHD.keys())
+    per_house_dicts = MONTHLY_TRANSACTION_BY_HSHD.values()
+
+    per_house_data_lists = [o['data'] for o in per_house_dicts]
+
+    per_house_datasets = [
+        {'label': 'HSHD %d' % h, 'data': l, 'borderColor': FLAT_UI_COLORS[i]} \
+        for i, (h, l) in enumerate(zip(hshd_vals, per_house_data_lists))
+    ]
+
+    per_house_props = {
+        'id': 'per-house',
+        'title': 'Per-House Purchases',
+        'xLabel': 'Date',
+        'yLabel': 'Purchase Total ($)',
+        'labels': labels,
+        'datasets': per_house_datasets,
+    }
+
+    # Render resulting view
+    return render(request, 'engagement.html', {
+        'hshd_vals': hshd_vals,
+        'all_data_props': all_data_props,
+        'per_house_props': per_house_props,
+    })
 
 # === TEMP ===
 
