@@ -1,5 +1,76 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% include "line_chart_labeled.html" with title=title labels=labels data=data backgroundColor=backgroundColor borderColor=borderColor xLabel=xLabel yLabel=yLabel %}
+
+<h2>Customer Engagement</h2>
+
+<div style="max-width: 800px">
+    <p>
+        In this section of the webpage, we will try to analyze the data and address
+        the question:
+
+        <blockquote>How does customer engagement change over time?</blockquote>
+
+        We can first look at this by looking at <b>overall purchases</b> across
+        all households...
+    </p>
+</div>
+
+<h4>Total Monthly Sales</h2>
+
+<div style="max-width: 80%">
+    {% include "line_chart_labeled.html" with props=all_data_props only %}
+</div>
+
+<div style="max-width: 800px">
+    <p>
+        Here, it's clear that in general, purchases have been fairly steady
+        until <b>March 2020</b> where wee a <b>sudden spike in sales</b>. This
+        is likely due to the COVID19 pandemic, as this was when it first began
+        to hit the US, causing people to horde supplies. After this point, we
+        can see it begins to decline, but still remains relatively higher than
+        the average sales of previous months.
+    </p>
+    <p>
+        For ease of analysis, as well as for statistical best practice, we can
+        dive further by taking a <b>sample</b> of households. The chosen
+        households are mostly random, but were slightly curated to ensure
+        variance in background and abundance in purchasing activity.
+    </p>
+    <p>
+        The resulting chosen households can be tagged by their HSHD (ID) values:
+        <b>{{ hshd_vals|join:", " }}</b>, which we can then analyze similarly...
+    </p>
+</div>
+
+<h4>Total Monthly Expense By House</h2>
+
+<div style="max-width: 80%">
+    {% include "line_chart_labeled.html" with props=per_house_props %}
+</div>
+
+<div style="max-width: 800px">
+
+    <p>
+        Here, we can see the total monthly transaction data for each household.
+    </p>
+
+    <p>
+
+        Seeing this data, it's clear theres a wide variety of things happening
+        in each household. First, we can gather that <b>sales are not severely
+        decreasing over time</b>, as it appears that there is always some sort
+        of activity happening regardless of the time of year. However, we also
+        see that <b>purchase activity in these households gets less abundant and
+        more consistent following January 2020</b>. This is clearly a result of
+        the ongoing pandemic, and we can even see a slight spike across most of
+        the households around March 2020, as we've also seen in the overall
+        income. This perhaps implies that the pandemic has forced households
+        into more normalized schedules as things like travel calmed down, as well
+        resulting in less spending as the US economy began its initial decline.
+
+    </p>
+
+</div>
+
 {% endblock %}

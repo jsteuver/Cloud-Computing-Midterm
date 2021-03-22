@@ -3,38 +3,42 @@
 Basic line chart that uses labels along the bottom for time-based items
 
 Example usage:
-  render(request, 'line_chart_labeled.html', {
+  render(request, 'line_chart_labeled.html', {'props': {
       'title': 'City Population 2020',
 
       'xLabel': 'Month',
+      'yLabel': 'Population',
+
       'labels': ['April', 'May', 'June'],
 
-      'yLabel': 'Population',
-      'data': [100, 200, 300000],
-
-      'backgroundColor': '#404040',
-      'borderColor': '#606060',
-  })
+      'datasets': [
+          {
+              data: [100, 200, 30000],
+              label: 'Kentucky',
+              borderColor: '#606060',
+          }, {
+              data: [500, 720, 0],
+              label: 'Illinois',
+              borderColor: '#404040',
+          }
+      ],
+  }})
 
 {% endcomment %}
 
 {% block content %}
-  <div id="container" style="width: 60%;">
-    <canvas id="line-chart-labeled"></canvas>
+  <div id="{{ props.id|safe }}-container">
+    <canvas id="{{ props.id|safe }}"></canvas>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
   <script>
-    var config = {
+   var props = {{ props|safe }}
+   var config = {
       type: 'line',
       data: {
-        datasets: [{
-          data: {{ data|safe }},
-          backgroundColor: '{{ backgroundColor|safe }}',
-          borderColor: '{{ borderColor|safe }}',
-          label: '{{ title|safe }}',
-        }],
-        labels: {{ labels|safe }}
+        datasets: props.datasets || [],
+        labels: props.labels || [],
       },
       options: {
         responsive: true,
@@ -42,23 +46,21 @@ Example usage:
           xAxes: [{
             scaleLabel: {
               display: true,
-              labelString: '{{ xLabel|safe }}',
+              labelString: props.xLabel || '',
             },
           }],
           yAxes: [{
             scaleLabel: {
               display: true,
-              labelString: '{{ yLabel|safe }}',
+              labelString: props.yLabel || '',
             },
           }],
         },
       }
     };
 
-    window.onload = function() {
-      var ctx = document.getElementById('line-chart-labeled').getContext('2d');
-      window.myLine = new Chart(ctx, config);
-    };
+   var ctx = document.getElementById('{{ props.id|safe }}').getContext('2d');
+   window['{{props.id|safe}}'] = new Chart(ctx, config);
 
   </script>
 

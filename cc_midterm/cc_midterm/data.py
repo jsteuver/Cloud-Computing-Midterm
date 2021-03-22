@@ -3,41 +3,38 @@
 # All remaining configuration should be handled within views
 
 import calendar
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
 
 from .models import Households, Products, Transactions
 
-def get_monthly_transaction_amt():
-    print('Getting monthly transaction amounts (this may take awhile)...')
-    all_transactions = Transactions.objects.all()
+def get_monthly_transaction_amt(transactions=None):
+    if transactions is None: transactions = Transactions.objects.all()
 
-    month_dict = {}
-    for transaction in all_transactions:
-        month = transaction.purchase.month
-        month_name = calendar.month_name[month]
-        year = transaction.purchase.year
+    grouped = transactions \
+                          .annotate(month=TruncMonth('purchase')) \
+                          .values('month') \
+                          .annotate(total=Sum('spend')) \
+                          .order_by('month')
 
-        if year in month_dict:
-            if month in month_dict[year]:
-                month_dict[year][month] += transaction.spend
-            else:
-                month_dict[year][month] = transaction.spend
-        else:
-            month_dict[year] = {}
-            month_dict[year][month] = transaction.spend
+    raw_data = grouped.values_list('total', flat=True)
+    raw_dates = grouped.values_list('month', flat=True)
 
-    data = []
-    labels = []
-
-    for year in sorted(month_dict.keys()):
-        year_data = month_dict[year]
-        for month in sorted(year_data.keys()):
-            label_string = calendar.month_name[month] + ' ' + str(year)
-            purchase_amt = int(year_data[month])
-
-            labels.append(label_string)
-            data.append(purchase_amt)
+    data = [float(x) for x in raw_data]
+    labels = ['%s %d' % (calendar.month_name[d.month], d.year) for d in raw_dates]
 
     return {
         'data': data,
         'labels': labels,
     }
+
+def get_monthly_transaction_amt_by_hshd(hshd_vals, transactions=None):
+    if transactions is None: transactions = Transactions.objects.all()
+
+    ret_dict = {}
+    for hshd in hshd_vals:
+        print('Retrieving transactions for HSHD:', hshd)
+        this_hshd_transactions = transactions.filter(hshd_num=hshd)
+        ret_dict[hshd] = get_monthly_transaction_amt(this_hshd_transactions)
+
+    return ret_dict

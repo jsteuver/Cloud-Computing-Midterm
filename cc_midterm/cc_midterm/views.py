@@ -5,7 +5,7 @@ from django_tables2 import RequestConfig
 
 from .models import Households, Products, Transactions
 from .forms import UserForm
-from .data import get_monthly_transaction_amt
+from .data import get_monthly_transaction_amt, get_monthly_transaction_amt_by_hshd
 from .models import *
 from .tables import *
 
@@ -17,9 +17,14 @@ FLAT_UI_COLORS = [
     '#786fa6', '#f8a5c2', '#63cdda', '#ea8685', '#596275'
 ]
 
+# HSHD values to use for analysis
+HSHD_VALS = [10, 99, 117, 136, 308]
+
 # Get any data right at the start
 # Makes server start a slower, but user can view pages much more quickly
+print('Retrieving transaction data (this may take a while)...')
 MONTHLY_TRANSACTION_AMT = get_monthly_transaction_amt()
+MONTHLY_TRANSACTION_BY_HSHD = get_monthly_transaction_amt_by_hshd(HSHD_VALS)
 
 def home(request):
     text = "Welcome! Please log in to continue."
@@ -41,19 +46,45 @@ def signup(request):
     return render(request, 'signup.html', { 'form': form })
 
 def engagement(request):
-    data = MONTHLY_TRANSACTION_AMT['data']
+    # Process total data
     labels = MONTHLY_TRANSACTION_AMT['labels']
+    all_data = MONTHLY_TRANSACTION_AMT['data']
 
-    return render(request, 'engagement.html', {
-        'title': 'Purchases',
-        'labels': labels,
-        'data': data,
-        'backgroundColor': FLAT_UI_COLORS[8],
-        'borderColor': FLAT_UI_COLORS[9],
+    all_data_props = {
+        'id': 'all-data',
+        'title': 'Cumulative Purchases',
         'xLabel': 'Date',
         'yLabel': 'Purchase Total ($)',
-    })
+        'labels': labels,
+        'datasets': [{'label': 'All Data', 'data': all_data, 'borderColor': FLAT_UI_COLORS[0]}],
+    }
 
+    # Process per-household data
+    hshd_vals = list(MONTHLY_TRANSACTION_BY_HSHD.keys())
+    per_house_dicts = MONTHLY_TRANSACTION_BY_HSHD.values()
+
+    per_house_data_lists = [o['data'] for o in per_house_dicts]
+
+    per_house_datasets = [
+        {'label': 'HSHD %d' % h, 'data': l, 'borderColor': FLAT_UI_COLORS[i]} \
+        for i, (h, l) in enumerate(zip(hshd_vals, per_house_data_lists))
+    ]
+
+    per_house_props = {
+        'id': 'per-house',
+        'title': 'Per-House Purchases',
+        'xLabel': 'Date',
+        'yLabel': 'Purchase Total ($)',
+        'labels': labels,
+        'datasets': per_house_datasets,
+    }
+
+    # Render resulting view
+    return render(request, 'engagement.html', {
+        'hshd_vals': hshd_vals,
+        'all_data_props': all_data_props,
+        'per_house_props': per_house_props,
+    })
 
 # === TEMP ===
 
@@ -139,12 +170,12 @@ def data_table(request):
     selection = int(request.GET.get('hshd') or 10)
     
     table = DataTable(Transactions.objects.filter(hshd_num=selection))
-    hshds = Households.objects.all().order_by('pk')
+    hshd_vals = Households.objects.all().order_by('pk')
     RequestConfig(request).configure(table)
 
     return render(request, 'data_table.html', { 
         'selection': selection,
-        'hshds': hshds,
+        'hshd_vals': hshd_vals,
         'table': table 
     })
 
