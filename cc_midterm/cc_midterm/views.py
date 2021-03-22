@@ -45,7 +45,7 @@ def signup(request):
 
     return render(request, 'signup.html', { 'form': form })
 
-def engagement(request):
+def engagement_over_time(request):
     # Process total data
     labels = MONTHLY_TRANSACTION_AMT['labels']
     all_data = MONTHLY_TRANSACTION_AMT['data']
@@ -80,11 +80,14 @@ def engagement(request):
     }
 
     # Render resulting view
-    return render(request, 'engagement.html', {
+    return render(request, 'engagement_over_time.html', {
         'hshd_vals': hshd_vals,
         'all_data_props': all_data_props,
         'per_house_props': per_house_props,
     })
+
+def engagement_per_factor(request):
+    return render(request, 'engagement_per_factor.html', {})
 
 # === TEMP ===
 
