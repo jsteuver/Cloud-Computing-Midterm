@@ -5,7 +5,7 @@
     <form action="/data-table/" method="GET">
         <label for="hshd"><h5 style="display: inline">Hshd num:</h5></label>
         <select name="hshd" id="hshd" style="max-width: 120px">
-            {% for hshd in hshds %}
+            {% for hshd in hshd_vals %}
                 <option value="{{ hshd.pk }}" {% if hshd.pk == selection %}selected{% endif %}>{{ hshd.pk }}</option>
             {% endfor %}
         </select>
