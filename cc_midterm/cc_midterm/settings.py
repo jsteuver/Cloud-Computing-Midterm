@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_tables2',
+    'bulk_update_or_create',
     'cc_midterm',
 ]
 

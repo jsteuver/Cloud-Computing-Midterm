@@ -1,7 +1,10 @@
 from django.db import models
+from bulk_update_or_create import BulkUpdateOrCreateQuerySet
 
 
 class Households(models.Model):
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
+
     hshd_num = models.SmallIntegerField(db_column='HSHD_NUM', primary_key=True)  # Field name made lowercase.
     l = models.CharField(db_column='L', max_length=10, blank=True, null=True)  # Field name made lowercase.
     age_range = models.CharField(db_column='AGE_RANGE', max_length=250, blank=True, null=True)  # Field name made lowercase.
@@ -17,6 +20,8 @@ class Households(models.Model):
 
 
 class Products(models.Model):
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
+
     product_num = models.IntegerField(db_column='PRODUCT_NUM', primary_key=True)  # Field name made lowercase.
     department = models.CharField(db_column='DEPARTMENT', max_length=250, blank=True, null=True)  # Field name made lowercase.
     commodity = models.CharField(db_column='COMMODITY', max_length=250, blank=True, null=True)  # Field name made lowercase.
@@ -28,6 +33,8 @@ class Products(models.Model):
 
 
 class Transactions(models.Model):
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
+
     basket_num = models.CharField(db_column='BASKET_NUM', max_length=250, primary_key=True)  # Field name made lowercase.
     hshd_num = models.ForeignKey(Households, on_delete=models.CASCADE, db_column='HSHD_NUM', blank=True, null=True)  # Field name made lowercase.
     purchase = models.DateField(db_column='PURCHASE', blank=True, null=True)  # Field name made lowercase.
