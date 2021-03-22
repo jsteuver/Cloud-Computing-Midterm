@@ -7,15 +7,36 @@
 <div style="max-width: 800px">
     <p>
 
-        In this page, we will analyze customer engagement based on a demographic
-        factor. Although there are many interweaving options available, it was
+        In this page, we will analyze customer engagement across various the
+        various types of commodities available for purchase. We will first do
+        this by looking at <b>overall purchase amounts per household</b> across
+        each available commodity...
+
+        Although there are many interweaving options available, it was
         decided here to analyze each department <b>based on income level</b>...
 
     </p>
 </div>
 
 <div style="max-width: 80%">
-    {% include "bar_graph.html" with props=income_props only %}
+    {% include "bar_graph.html" with props=commodity_props only %}
+</div>
+
+<div style="max-width: 800px">
+    <p>
+
+        (Analysis to come...)
+
+    </p>
+
+    <p>
+
+        To analyze this further, we can split up the data based on various
+        <b>demographic factors</b> of the purchasing household. There are
+        clearly many interweaving options available for this, but it was decided
+        here to focus our commodity analysis <b>based on income level</b>...
+
+    </p>
 </div>
 
 {% endblock %}

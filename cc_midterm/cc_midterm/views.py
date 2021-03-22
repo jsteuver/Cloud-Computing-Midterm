@@ -5,7 +5,7 @@ from django_tables2 import RequestConfig
 
 from .models import Households, Products, Transactions
 from .forms import UserForm
-from .data import get_monthly_transaction_amt, get_monthly_transaction_amt_by_hshd
+from .data import *
 from .models import *
 from .tables import *
 
@@ -25,6 +25,8 @@ HSHD_VALS = [10, 99, 117, 136, 308]
 print('Retrieving transaction data (this may take a while)...')
 MONTHLY_TRANSACTION_AMT = get_monthly_transaction_amt()
 MONTHLY_TRANSACTION_BY_HSHD = get_monthly_transaction_amt_by_hshd(HSHD_VALS)
+
+DEPT_TRANSACTION_AMT = get_dept_transaction_amt()
 
 def home(request):
     text = "Welcome! Please log in to continue."
@@ -87,20 +89,25 @@ def engagement_over_time(request):
     })
 
 def engagement_per_factor(request):
-    categories = ['Fish', 'Turkey']
-    income_props = {
-        'id': 'income',
-        'title': 'Purchases by Income',
+    commodities = DEPT_TRANSACTION_AMT['labels']
+    amts_per_household = DEPT_TRANSACTION_AMT['data']
+
+    commodity_props = {
+        'id': 'commodity',
+        'title': 'Commodity Purchases Per Household',
         'xLabel': 'Category',
-        'yLabel': 'Purchase Amt Per Visit ($)',
-        'labels': categories,
+        'yLabel': 'Purchase Amt Per Household ($)',
+        'labels': commodities,
         'datasets': [
-            {'label': '20k-35k', 'data': [50, 70], 'backgroundColor': FLAT_UI_COLORS[0]},
-            {'label': '35k-120k', 'data': [20, 300], 'backgroundColor': FLAT_UI_COLORS[1]},
+            {
+                'label': 'All Households',
+                'data': amts_per_household,
+                'backgroundColor': FLAT_UI_COLORS[0]
+            },
         ],
     }
     return render(request, 'engagement_per_factor.html', {
-        'income_props': income_props
+        'commodity_props': commodity_props
     })
 
 # === TEMP ===
