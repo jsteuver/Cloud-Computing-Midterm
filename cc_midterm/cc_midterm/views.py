@@ -87,7 +87,21 @@ def engagement_over_time(request):
     })
 
 def engagement_per_factor(request):
-    return render(request, 'engagement_per_factor.html', {})
+    categories = ['Fish', 'Turkey']
+    income_props = {
+        'id': 'income',
+        'title': 'Purchases by Income',
+        'xLabel': 'Category',
+        'yLabel': 'Purchase Amt Per Visit ($)',
+        'labels': categories,
+        'datasets': [
+            {'label': '20k-35k', 'data': [50, 70], 'backgroundColor': FLAT_UI_COLORS[0]},
+            {'label': '35k-120k', 'data': [20, 300], 'backgroundColor': FLAT_UI_COLORS[1]},
+        ],
+    }
+    return render(request, 'engagement_per_factor.html', {
+        'income_props': income_props
+    })
 
 # === TEMP ===
 
