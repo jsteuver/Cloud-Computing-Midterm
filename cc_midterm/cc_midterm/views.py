@@ -94,14 +94,19 @@ def upload(request):
     if request.method == 'POST':
         form = UploadForm(request.POST, request.FILES)
         
-        households_file = request.FILES['households'].open('r').read().decode('utf-8')
-        upload_households(households_file)
+        if 'households' in request.FILES.keys():
+            households_file = request.FILES['households'].open('r').read().decode('utf-8')
+            upload_households(households_file)
         
-        products_file = request.FILES['products'].open('r').read().decode('utf-8')
-        upload_products(products_file)
+        if 'products' in request.FILES.keys():
+            products_file = request.FILES['products'].open('r').read().decode('utf-8')
+            upload_products(products_file)
 
-        transactions_file = request.FILES['transactions'].open('r').read().decode('utf-8')
-        upload_transactions(transactions_file)
+        if 'transactions' in request.FILES.keys():
+            transactions_file = request.FILES['transactions'].open('r').read().decode('utf-8')
+            upload_transactions(transactions_file)
+
+        return redirect('data-table')
 
     else:
         form = UploadForm()

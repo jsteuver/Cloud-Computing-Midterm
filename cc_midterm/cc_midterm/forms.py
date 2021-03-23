@@ -12,6 +12,6 @@ class UserForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
 class UploadForm(forms.Form):
-    households = forms.FileField()
-    products = forms.FileField()
-    transactions = forms.FileField()
+    households = forms.FileField(required=False)
+    products = forms.FileField(required=False)
+    transactions = forms.FileField(required=False)
