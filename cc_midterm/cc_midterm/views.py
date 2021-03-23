@@ -94,15 +94,17 @@ def upload(request):
     if request.method == 'POST':
         form = UploadForm(request.POST, request.FILES)
         
-        if 'households' in request.FILES.keys():
+        # Before processing, make sure the file exists and is a .csv file
+
+        if 'households' in request.FILES.keys() and request.FILES['households'].name.endswith('.csv'):
             households_file = request.FILES['households'].open('r').read().decode('utf-8')
             upload_households(households_file)
         
-        if 'products' in request.FILES.keys():
+        if 'products' in request.FILES.keys() and request.FILES['products'].name.endswith('.csv'):
             products_file = request.FILES['products'].open('r').read().decode('utf-8')
             upload_products(products_file)
 
-        if 'transactions' in request.FILES.keys():
+        if 'transactions' in request.FILES.keys() and request.FILES['transactions'].name.endswith('.csv'):
             transactions_file = request.FILES['transactions'].open('r').read().decode('utf-8')
             upload_transactions(transactions_file)
 
