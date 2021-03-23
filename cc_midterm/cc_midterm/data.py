@@ -3,10 +3,47 @@
 # All remaining configuration should be handled within views
 
 import calendar
+import re
+
 from django.db.models import Sum, Count, F, DecimalField, ExpressionWrapper
 from django.db.models.functions import TruncMonth
 
 from .models import Households, Products, Transactions
+
+# == Util methods ==
+
+def sort_income_ranges(income_ranges):
+    new_list = []
+
+    for ir in income_ranges:
+        num_re = re.search('[0-9]+', ir)
+
+        if num_re is None:
+            print('WARNING: Invalid income range ', ir)
+            continue
+
+        num_str = num_re.group(0)
+        num_start = num_re.start()
+
+        added = False
+        num = int(num_str)
+        ir_dict = {
+            'text': ir,
+            'val': num,
+            'start': num_start,
+        }
+
+        for i, x in enumerate(new_list):
+            if num < x['val'] or (num == x['val'] and num_start > x['start']):
+                new_list.insert(i, ir_dict)
+                added = True
+                break
+
+        if not added: new_list.append(ir_dict)
+
+    return [x['text'] for x in new_list]
+
+# == Data retrieval methods ==
 
 def get_monthly_transaction_amt(transactions=None):
     if transactions is None: transactions = Transactions.objects.all()
@@ -39,7 +76,7 @@ def get_monthly_transaction_amt_by_hshd(hshd_vals, transactions=None):
 
     return ret_dict
 
-def get_dept_transaction_amt(transactions=None):
+def get_comm_transaction_amt(transactions=None):
     if transactions is None: transactions = Transactions.objects.all()
 
     grouped = transactions \
@@ -65,3 +102,24 @@ def get_dept_transaction_amt(transactions=None):
         'data': data,
         'labels': labels,
     }
+
+def get_comm_transaction_amt_by_income(transactions=None):
+    if transactions is None: transactions = Transactions.objects.all()
+
+    income_ranges = Households.objects \
+                              .values_list('income_range', flat=True) \
+                              .distinct() \
+                              .exclude(income_range__isnull=True) \
+                              .exclude(income_range__contains='null')
+
+    income_ranges_sorted = sort_income_ranges(income_ranges)
+
+    ret_dict = {}
+    for ir in income_ranges_sorted:
+        print('Retrieving transactions for income range:', ir.strip())
+        this_ir_transactions = transactions \
+            .select_related('hshd_num') \
+            .filter(hshd_num__income_range=ir)
+        ret_dict[ir] = get_comm_transaction_amt(this_ir_transactions)
+
+    return ret_dict

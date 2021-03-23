@@ -26,7 +26,8 @@ print('Retrieving transaction data (this may take a while)...')
 MONTHLY_TRANSACTION_AMT = get_monthly_transaction_amt()
 MONTHLY_TRANSACTION_BY_HSHD = get_monthly_transaction_amt_by_hshd(HSHD_VALS)
 
-DEPT_TRANSACTION_AMT = get_dept_transaction_amt()
+COMM_TRANSACTION_AMT = get_comm_transaction_amt()
+COMM_TRANSACTION_AMT_BY_INCOME = get_comm_transaction_amt_by_income()
 
 def home(request):
     text = "Welcome! Please log in to continue."
@@ -89,14 +90,15 @@ def engagement_over_time(request):
     })
 
 def engagement_per_factor(request):
-    commodities = DEPT_TRANSACTION_AMT['labels']
-    amts_per_household = DEPT_TRANSACTION_AMT['data']
+    # Get general data
+    commodities = COMM_TRANSACTION_AMT['labels']
+    amts_per_household = COMM_TRANSACTION_AMT['data']
 
     commodity_props = {
         'id': 'commodity',
         'title': 'Commodity Purchases Per Household',
         'xLabel': 'Category',
-        'yLabel': 'Purchase Amt Per Household ($)',
+        'yLabel': 'Purchase Amount Per Household ($)',
         'labels': commodities,
         'datasets': [
             {
@@ -106,8 +108,32 @@ def engagement_per_factor(request):
             },
         ],
     }
+
+    # Get data split further based on income
+    income_ranges = list(COMM_TRANSACTION_AMT_BY_INCOME.keys())
+    income_dicts = COMM_TRANSACTION_AMT_BY_INCOME.values()
+
+    income_data_lists = [o['data'] for o in income_dicts]
+    color_len = len(FLAT_UI_COLORS)
+
+    per_house_datasets = [
+        {'label': ir.strip(), 'data': l, 'backgroundColor': FLAT_UI_COLORS[i % color_len]} \
+        for i, (ir, l) in enumerate(zip(income_ranges, income_data_lists))
+    ]
+
+    income_props = {
+        'id': 'income',
+        'title': 'Commodity Purchases Per Household By Income Range',
+        'xLabel': 'Category',
+        'yLabel': 'Purchase Amount Per Household ($)',
+        'labels': commodities,
+        'datasets': per_house_datasets,
+    }
+
+    # Render resulting view
     return render(request, 'engagement_per_factor.html', {
-        'commodity_props': commodity_props
+        'commodity_props': commodity_props,
+        'income_props': income_props,
     })
 
 # === TEMP ===
