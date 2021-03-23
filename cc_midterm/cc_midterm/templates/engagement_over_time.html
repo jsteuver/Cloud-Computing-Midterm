@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2>Customer Engagement</h2>
+<h2>Engagement Over Time</h2>
 
 <div style="max-width: 800px">
     <p>
@@ -16,7 +16,7 @@
     </p>
 </div>
 
-<h4>Total Monthly Sales</h2>
+<h4>Total Monthly Sales</h4>
 
 <div style="max-width: 80%">
     {% include "line_chart_labeled.html" with props=all_data_props only %}
@@ -25,7 +25,7 @@
 <div style="max-width: 800px">
     <p>
         Here, it's clear that in general, purchases have been fairly steady
-        until <b>March 2020</b> where wee a <b>sudden spike in sales</b>. This
+        until <b>March 2020</b> where we see a <b>sudden spike in sales</b>. This
         is likely due to the COVID19 pandemic, as this was when it first began
         to hit the US, causing people to horde supplies. After this point, we
         can see it begins to decline, but still remains relatively higher than
@@ -34,7 +34,7 @@
     <p>
         For ease of analysis, as well as for statistical best practice, we can
         dive further by taking a <b>sample</b> of households. The chosen
-        households are mostly random, but were slightly curated to ensure
+        households are mostly random, but they were slightly curated to ensure
         variance in background and abundance in purchasing activity.
     </p>
     <p>
@@ -43,7 +43,7 @@
     </p>
 </div>
 
-<h4>Total Monthly Expense By House</h2>
+<h4>Total Monthly Expense By House</h4>
 
 <div style="max-width: 80%">
     {% include "line_chart_labeled.html" with props=per_house_props %}
@@ -66,7 +66,7 @@
         the ongoing pandemic, and we can even see a slight spike across most of
         the households around March 2020, as we've also seen in the overall
         income. This perhaps implies that the pandemic has forced households
-        into more normalized schedules as things like travel calmed down, as well
+        into more normalized schedules as things like travel calmed down,
         resulting in less spending as the US economy began its initial decline.
 
     </p>
