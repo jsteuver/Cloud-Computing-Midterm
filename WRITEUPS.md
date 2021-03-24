@@ -27,6 +27,9 @@ unrequired notes regarding how each requirement was addressed.
 This file is organized directly by the requirements given, in the order as they
 are given on the assignment.
 
+_**NOTE:** To access some links, like the engagement pages and data table, you
+will need to be logged in!_
+
 ## Requirements
 
 ### Requirement 1
@@ -68,6 +71,9 @@ This will then of course be deployed to the Azure web service for public access.
 This is accessible [here](http://ccmidterm.eastus.azurecontainer.io:8000/). You can create an account via the
 **Sign Up** link at the top, after which you can use the **Login** and
 **Logout** links as necessary.
+
+Note again that you **need to be logged in** to access some of the remaining
+requirements.
 
 ### Requirement 4
 
