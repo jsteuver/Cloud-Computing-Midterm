@@ -29,7 +29,4 @@ urlpatterns = [
     path('engagement-per-factor/', views.engagement_per_factor, name='engagement-per-factor'),
     path('data-table/', views.data_table, name='data-table'),
     path('upload/', views.upload, name='upload'),
-    # Temp for testing
-    path('pie-chart/', views.pie_chart, name='pie-chart'),
-    path('line-chart-labeled/', views.line_chart_labeled, name='line-chart-labeled'),
 ]

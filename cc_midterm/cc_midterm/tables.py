@@ -19,3 +19,15 @@ class DataTable(tables.Table):
     class Meta:
         model = Transactions
         exclude = ('product_num', 'hshd_num')
+        sequence = ('Hshd_num', 
+                    '...', 
+                    'Department', 
+                    'Commodity', 
+                    'Loyalty_flag', 
+                    'Age_range', 
+                    'Marital_status', 
+                    'Income_range', 
+                    'Homeowner_desc', 
+                    'Hshd_composition', 
+                    'Hshd_size', 
+                    'Children')

@@ -33,7 +33,7 @@ are given on the assignment.
 
 > Give a **unique team name** to your project team... and **select a lead**.
 
-- **Team name:** Sloppy cowboys
+- **Team name:** Sloppy Cowboys
 - **Lead:** Jake Steuver
 
 ### Requirement 2
@@ -65,7 +65,7 @@ This will then of course be deployed to the Azure web service for public access.
 > - Password  
 > - Email
 
-This is accessible at *(link to be added)*. You can create an account via the
+This is accessible [here](http://ccmidterm.eastus.azurecontainer.io:8000/). You can create an account via the
 **Sign Up** link at the top, after which you can use the **Login** and
 **Logout** links as necessary.
 
@@ -74,7 +74,7 @@ This is accessible at *(link to be added)*. You can create an account via the
 > Create a data store / database in Azure of your choise and load Transactions,
 > Households and Products from [a given link]...
 
-We chose to use a **MySQL** server hosted within Azure, primarily for its easy
+We chose to use a **Microsoft SQL** server hosted within Azure, primarily for its easy
 integration with the Django framework. This was simply loaded as necessary,
 which is hopefully reflected across the site.
 
@@ -133,7 +133,10 @@ households. This is then analyzed within the page, as was done for Requirement
 
 > Web app, where we can load the most current data sets...
 
-*In progress...*
+This can be found at the **Upload Data** link at the top of the page. This allows
+users to upload CSV files to be included in the database. Such data can be viewed
+by navigating to the **Data Table** page. The columns of the CSV files can be in
+any order, but they must use the same column names as the given sample data.
 
 ### Requirement 9
 
