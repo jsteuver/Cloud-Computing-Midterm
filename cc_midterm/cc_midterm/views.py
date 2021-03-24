@@ -4,10 +4,11 @@ from django.shortcuts import render, redirect
 from django_tables2 import RequestConfig
 
 from .models import Households, Products, Transactions
-from .forms import UserForm
+from .forms import *
 from .data import *
 from .models import *
 from .tables import *
+from .uploads import *
 
 # Central UI colors
 # Obtained from pastel colors (top row) of:
@@ -88,6 +89,31 @@ def engagement_over_time(request):
         'all_data_props': all_data_props,
         'per_house_props': per_house_props,
     })
+    
+def upload(request):
+    if request.method == 'POST':
+        form = UploadForm(request.POST, request.FILES)
+        
+        # Before processing, make sure the file exists and is a .csv file
+
+        if 'households' in request.FILES.keys() and request.FILES['households'].name.endswith('.csv'):
+            households_file = request.FILES['households'].open('r').read().decode('utf-8')
+            upload_households(households_file)
+        
+        if 'products' in request.FILES.keys() and request.FILES['products'].name.endswith('.csv'):
+            products_file = request.FILES['products'].open('r').read().decode('utf-8')
+            upload_products(products_file)
+
+        if 'transactions' in request.FILES.keys() and request.FILES['transactions'].name.endswith('.csv'):
+            transactions_file = request.FILES['transactions'].open('r').read().decode('utf-8')
+            upload_transactions(transactions_file)
+
+        return redirect('data-table')
+
+    else:
+        form = UploadForm()
+    
+    return render(request, 'upload.html', { 'form': form })
 
 def engagement_per_factor(request):
     # Get general data

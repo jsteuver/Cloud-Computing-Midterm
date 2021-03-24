@@ -8,3 +8,8 @@ class UserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
+
+class UploadForm(forms.Form):
+    households = forms.FileField(required=False)
+    products = forms.FileField(required=False)
+    transactions = forms.FileField(required=False)
