@@ -1,78 +1,74 @@
 from datetime import datetime
+import csv
 
 from .models import *
 
 
 def upload_households(households_file):
-    households_rows = households_file.split('\n')
-
+    
+    rows = [{ k: v for k, v in row.items() } 
+            for row in csv.DictReader(households_file.split('\n'), delimiter=',')]
+    
     households = []
-    for i in range(1, len(households_rows)):
-        if households_rows[i] == '': # Empty row: just move on to the next one
-            continue
-
-        row_values = households_rows[i].split(',')
-
+    for row in rows:
+        row_cleaned = { x.strip(): v for x, v in row.items() } # Remove trailing spaces from keys so that they're easier to work with
+        
         h = Households(
-                hshd_num=int(row_values[0].strip()),
-                l=row_values[1],
-                age_range=row_values[2],
-                marital=row_values[3],
-                income_range=row_values[4],
-                homeowner=row_values[5],
-                hshd_composition=row_values[6],
-                hh_size=row_values[7],
-                children=row_values[8]
-            )
+            hshd_num=int(row_cleaned['HSHD_NUM'].strip()),
+            l=row_cleaned['L'],
+            age_range=row_cleaned['AGE_RANGE'],
+            marital=row_cleaned['MARITAL'],
+            income_range=row_cleaned['INCOME_RANGE'],
+            homeowner=row_cleaned['HOMEOWNER'],
+            hshd_composition=row_cleaned['HSHD_COMPOSITION'],
+            hh_size=row_cleaned['HH_SIZE'],
+            children=row_cleaned['CHILDREN']
+        )
 
         households.append(h)
+
+    Households.objects.bulk_update_or_create(households, ['l', 'age_range', 'marital', 'income_range', 'homeowner', 'hshd_composition', 'hh_size', 'children'], match_field='hshd_num') # Update outdated household info or insert if it doesn't already exists
         
-        Households.objects.bulk_update_or_create(households, ['l', 'age_range', 'marital', 'income_range', 'homeowner', 'hshd_composition', 'hh_size', 'children'], match_field='hshd_num') # Update outdated household info or insert if it doesn't already exist
-
 def upload_products(products_file):
-    products_rows = products_file.split('\n')
-
+    rows = [{ k: v for k, v in row.items() } 
+            for row in csv.DictReader(products_file.split('\n'), delimiter=',')]
+    
     products = []
-    for i in range(1, len(products_rows)):
-        if products_rows[i] == '': # Empty row: just move on to the next one
-            continue
-
-        row_values = products_rows[i].split(',')
+    for row in rows:
+        row_cleaned = { x.strip(): v for x, v in row.items() } # Remove trailing spaces from keys so that they're easier to work with
 
         p = Products(
-                product_num=int(row_values[0].strip()),
-                department=row_values[1],
-                commodity=row_values[2],
-                brand_ty=row_values[3],
-                natural_organic_flag=row_values[4]
+                product_num=int(row_cleaned['PRODUCT_NUM'].strip()),
+                department=row_cleaned['DEPARTMENT'],
+                commodity=row_cleaned['COMMODITY'],
+                brand_ty=row_cleaned['BRAND_TY'],
+                natural_organic_flag=row_cleaned['NATURAL_ORGANIC_FLAG']
             )
 
         products.append(p)
 
-        Products.objects.bulk_update_or_create(products, ['department', 'commodity', 'brand_ty', 'natural_organic_flag'], match_field='product_num') # Update outdated product info or insert if it doesn't already exist
+    Products.objects.bulk_update_or_create(products, ['department', 'commodity', 'brand_ty', 'natural_organic_flag'], match_field='product_num') # Update outdated product info or insert if it doesn't already exist
 
 def upload_transactions(transactions_file):
-    transactions_rows = transactions_file.split('\n')
-
+    rows = [{ k: v for k, v in row.items() } 
+            for row in csv.DictReader(transactions_file.split('\n'), delimiter=',')]
+    
     transactions = []
-    for i in range(1, len(transactions_rows)):
-        if transactions_rows[i] == '': # Empty row: just move on to the next one
-            continue
-
-        row_values = transactions_rows[i].split(',')
-
+    for row in rows:
+        row_cleaned = { x.strip().rstrip('_'): v for x, v in row.items() } # Remove trailing spaces/underscores from keys so that they're easier to work with
+        
         t = Transactions(
-                basket_num=int(row_values[0].strip()),
-                hshd_num_id=row_values[1],
-                purchase=datetime.strptime(row_values[2], '%d-%b-%y'),
-                product_num_id=row_values[3],
-                spend=row_values[4],
-                units=row_values[5],
-                store_r=row_values[6],
-                week_num=row_values[7],
-                year=row_values[8]
+                basket_num=int(row_cleaned['BASKET_NUM'].strip()),
+                hshd_num_id=row_cleaned['HSHD_NUM'],
+                purchase=datetime.strptime(row_cleaned['PURCHASE'], '%d-%b-%y'),
+                product_num_id=row_cleaned['PRODUCT_NUM'],
+                spend=row_cleaned['SPEND'],
+                units=row_cleaned['UNITS'],
+                store_r=row_cleaned['STORE_R'],
+                week_num=row_cleaned['WEEK_NUM'],
+                year=row_cleaned['YEAR']
             )
 
         transactions.append(t)
 
-        Transactions.objects.bulk_create(transactions) # Using standard bulk_create because old transaction records shouldn't be updated with new ones. Just insert the new ones.
+    Transactions.objects.bulk_create(transactions) # Using standard bulk_create because old transaction records shouldn't be updated with new ones. Just insert the new ones.
